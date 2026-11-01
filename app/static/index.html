@@ -5,136 +5,296 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Scam Kavach</title>
 <meta name="description" content="Got a suspicious SMS, WhatsApp message or call? Scam Kavach checks it and explains it in your language, out loud.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<meta name="theme-color" content="#E9F0F5">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 2 4 6.5v8.2C4 22 9.2 27.6 16 30c6.8-2.4 12-8 12-15.3V6.5Z' fill='%235A2D82'/><path d='m10.5 16 4 4 7-8' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;800&family=Noto+Sans+Tamil:wght@400;600&family=Noto+Sans+Bengali:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&family=Noto+Sans+Malayalam:wght@400;600&family=Noto+Sans+Gujarati:wght@400;600&family=Noto+Sans+Gurmukhi:wght@400;600&family=Noto+Sans+Oriya:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,400..800&family=Anek+Devanagari:wdth,wght@75..125,400..800&family=Anek+Bangla:wdth,wght@75..125,400..800&family=Anek+Tamil:wdth,wght@75..125,400..800&family=Anek+Telugu:wdth,wght@75..125,400..800&family=Anek+Gujarati:wdth,wght@75..125,400..800&family=Anek+Kannada:wdth,wght@75..125,400..800&family=Anek+Malayalam:wdth,wght@75..125,400..800&family=Anek+Gurmukhi:wdth,wght@75..125,400..800&family=Anek+Odia:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
 <style>
+  /* Inland-letter blue paper, ballpoint ink, violet office-stamp ink. */
   :root {
-    --bg: #faf7f2; --surface: #ffffff; --ink: #1d1b18; --muted: #6b655c; --line: #e6dfd3;
-    --brand: #b4461b; --brand-ink: #ffffff;
-    --scam: #b42318; --scam-bg: #fdecea; --sus: #a15c07; --sus-bg: #fff4e0; --safe: #1f7a4d; --safe-bg: #e7f6ee;
-    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.06);
+    --paper: #E9F0F5; --slip: #FFFFFF; --ink: #1A2A4F; --muted: #536179; --rule: #C9D6E2;
+    --stamp: #5A2D82; --stamp-ink: #FFFFFF; --stamp-wash: #EEE6F6;
+    --scam: #B8261B; --scam-wash: #FBE9E7; --scam-mark: rgba(184, 38, 27, .2);
+    --sus: #9A5B00; --sus-wash: #FCF1DD;
+    --safe: #1D6B43; --safe-wash: #E3F3EA;
+    --focus: #1F5FD1;
+    --font: "Anek Latin", "Anek Devanagari", "Anek Bangla", "Anek Tamil", "Anek Telugu", "Anek Gujarati",
+            "Anek Kannada", "Anek Malayalam", "Anek Gurmukhi", "Anek Odia", system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #161412; --surface: #211e1b; --ink: #f2ede6; --muted: #a8a096; --line: #36312b;
-      --brand: #ee7a45; --brand-ink: #1a0d06;
-      --scam: #ff8a7a; --scam-bg: #3a1714; --sus: #f5b551; --sus-bg: #352512; --safe: #6fd3a0; --safe-bg: #12301f;
-      --shadow: none;
+      --paper: #0F1A28; --slip: #172537; --ink: #E4ECF4; --muted: #9AAABF; --rule: #2B3D55;
+      --stamp: #C3A6EE; --stamp-ink: #1C0F2E; --stamp-wash: #241A36;
+      --scam: #FF8E80; --scam-wash: #35171A; --scam-mark: rgba(255, 142, 128, .22);
+      --sus: #F2B65A; --sus-wash: #33260F;
+      --safe: #6CD49E; --safe-wash: #12301F;
+      --focus: #8AB4FF;
     }
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font-family: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Bengali", "Noto Sans Telugu",
-      "Noto Sans Kannada", "Noto Sans Malayalam", "Noto Sans Gujarati", "Noto Sans Gurmukhi", "Noto Sans Oriya", system-ui, sans-serif;
-    font-size: 17px; line-height: 1.55;
+  :root[data-theme="dark"] {
+    --paper: #0F1A28; --slip: #172537; --ink: #E4ECF4; --muted: #9AAABF; --rule: #2B3D55;
+    --stamp: #C3A6EE; --stamp-ink: #1C0F2E; --stamp-wash: #241A36;
+    --scam: #FF8E80; --scam-wash: #35171A; --scam-mark: rgba(255, 142, 128, .22);
+    --sus: #F2B65A; --sus-wash: #33260F;
+    --safe: #6CD49E; --safe-wash: #12301F;
+    --focus: #8AB4FF;
   }
-  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
-  header h1 { font-size: 30px; margin: 0; letter-spacing: -.02em; }
-  header h1 span { color: var(--brand); }
-  header p { margin: 6px 0 0; color: var(--muted); }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-top: 18px; box-shadow: var(--shadow); }
-  label.field { display: block; font-weight: 600; margin-bottom: 6px; }
-  select, textarea { width: 100%; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
-  textarea { min-height: 140px; resize: vertical; }
-  .tabs { display: flex; gap: 6px; margin: 16px 0 12px; flex-wrap: wrap; }
-  .tab { flex: 1 1 0; min-width: 120px; font: inherit; font-weight: 600; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
-  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-  .pane[hidden] { display: none; }
-  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px; text-align: center; color: var(--muted); cursor: pointer; }
-  .drop.has { border-style: solid; border-color: var(--brand); color: var(--ink); }
-  .drop img { max-width: 100%; max-height: 260px; border-radius: 8px; display: block; margin: 0 auto 8px; }
-  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 14px 18px; cursor: pointer; background: var(--brand); color: var(--brand-ink); }
-  .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 600; padding: 10px 14px; }
-  .btn:disabled { opacity: .55; cursor: wait; }
-  #go { width: 100%; margin-top: 16px; font-size: 19px; }
-  .hint { font-size: 14px; color: var(--muted); margin-top: 8px; }
-  .err { color: var(--scam); font-weight: 600; margin-top: 12px; }
-  .progress { margin-top: 14px; font-size: 15px; color: var(--muted); }
-  .progress li.done { color: var(--ink); }
-  .verdict { border-radius: 16px; padding: 18px; margin-top: 18px; border: 2px solid; }
-  .verdict.scam { background: var(--scam-bg); border-color: var(--scam); }
-  .verdict.suspicious { background: var(--sus-bg); border-color: var(--sus); }
-  .verdict.likely_safe { background: var(--safe-bg); border-color: var(--safe); }
-  .verdict .tag { font-size: 26px; font-weight: 800; }
-  .verdict.scam .tag { color: var(--scam); } .verdict.suspicious .tag { color: var(--sus); } .verdict.likely_safe .tag { color: var(--safe); }
-  .verdict .type { font-weight: 600; color: var(--muted); }
-  .verdict .one { font-size: 20px; font-weight: 600; margin: 10px 0 6px; }
-  audio { width: 100%; margin-top: 10px; }
-  h2 { font-size: 18px; margin: 0 0 10px; }
-  ol, ul { margin: 0; padding-left: 22px; }
-  li { margin: 6px 0; }
-  blockquote { margin: 0 0 4px; padding: 6px 10px; border-left: 4px solid var(--scam); background: var(--bg); border-radius: 0 8px 8px 0; font-weight: 600; overflow-wrap: anywhere; }
-  .flag { margin-bottom: 12px; }
-  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
-  .chip { font-size: 14px; padding: 4px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); overflow-wrap: anywhere; }
-  details summary { cursor: pointer; font-weight: 600; }
-  details pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; font-size: 15px; background: var(--bg); padding: 10px; border-radius: 8px; }
-  .help { font-size: 15px; }
-  .help strong { color: var(--brand); }
-  footer { margin-top: 28px; font-size: 13px; color: var(--muted); text-align: center; }
-  .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--scam); display: inline-block; animation: pulse 1s infinite; }
-  @keyframes pulse { 50% { opacity: .2; } }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font); font-size: 18px; line-height: 1.6;
+    font-variation-settings: "wdth" 100;
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Masthead ---------- */
+  .mark { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: var(--stamp); }
+  .mark svg { width: 26px; height: 26px; flex: none; }
+  .lede { margin: 28px 0 32px; }
+  .lede h1 {
+    margin: 0; font-size: clamp(40px, 11vw, 60px); line-height: 1; font-weight: 800;
+    font-variation-settings: "wdth" 118; letter-spacing: -.015em; text-wrap: balance;
+  }
+  .lede p { margin: 14px 0 0; font-size: 20px; line-height: 1.5; max-width: 34em; }
+  .lede p[lang="hi"] { margin-top: 6px; color: var(--muted); font-size: 18px; }
+
+  /* ---------- Form ---------- */
+  .step { margin-top: 28px; }
+  .step-q { display: block; margin: 0 0 10px; font-size: 22px; font-weight: 700; line-height: 1.3; }
+
+  .langs { display: flex; flex-wrap: wrap; gap: 8px; border: 0; margin: 0; padding: 0; }
+  .lang { position: relative; }
+  .lang input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .lang span {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 6px 16px;
+    border: 2px solid var(--rule); border-radius: 999px; background: var(--slip);
+    font-size: 19px; font-weight: 600; line-height: 1.2;
+  }
+  .lang input:checked + span { background: var(--stamp); border-color: var(--stamp); color: var(--stamp-ink); }
+  .lang input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .kinds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kind {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 8px;
+    min-height: 116px; padding: 16px 8px 12px; text-align: center; cursor: pointer;
+    font: inherit; font-size: 17px; font-weight: 600; line-height: 1.25; color: var(--ink);
+    background: var(--slip); border: 2px solid var(--rule); border-radius: 14px;
+  }
+  .kind svg { width: 34px; height: 34px; flex: none; }
+  .kind[aria-selected="true"] { border-color: var(--stamp); background: var(--stamp-wash); color: var(--stamp); box-shadow: inset 0 0 0 1px var(--stamp); }
+
+  .panel { margin-top: 12px; }
+  .drop {
+    display: block; width: 100%; padding: 28px 16px; border: 2px dashed var(--muted); border-radius: 14px;
+    background: var(--slip); color: var(--ink); font: inherit; text-align: center; cursor: pointer;
+  }
+  .drop strong { display: block; font-size: 20px; }
+  .drop small { display: block; margin-top: 4px; color: var(--muted); font-size: 16px; }
+  .drop.has { border-style: solid; border-color: var(--stamp); }
+  .drop img { display: block; max-width: 100%; max-height: 280px; margin: 0 auto 10px; border-radius: 8px; }
+
+  textarea {
+    display: block; width: 100%; min-height: 168px; resize: vertical; padding: 14px 16px;
+    font: inherit; font-size: 19px; color: var(--ink); background: var(--slip);
+    border: 2px solid var(--rule); border-radius: 14px;
+  }
+  textarea::placeholder { color: var(--muted); }
+  textarea:focus-visible { outline-offset: 0; border-color: var(--focus); }
+
+  .rec-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn-line {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 10px 18px;
+    font: inherit; font-size: 18px; font-weight: 600; color: var(--ink); cursor: pointer;
+    background: var(--slip); border: 2px solid var(--rule); border-radius: 12px;
+  }
+  .btn-line.recording { border-color: var(--scam); color: var(--scam); }
+  .rec-status { font-weight: 600; color: var(--muted); }
+  .rec-dot { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 50%; background: var(--scam); vertical-align: -1px; animation: blink 1s steps(2, start) infinite; }
+  @keyframes blink { to { visibility: hidden; } }
+  audio { display: block; width: 100%; margin-top: 12px; }
+  .note { margin: 10px 0 0; font-size: 16px; color: var(--muted); }
+
+  .go {
+    display: block; width: 100%; margin-top: 28px; min-height: 64px; padding: 14px 20px;
+    font: inherit; font-size: 22px; font-weight: 700; font-variation-settings: "wdth" 110;
+    color: var(--stamp-ink); background: var(--stamp); border: 0; border-radius: 14px; cursor: pointer;
+  }
+  .go:disabled { cursor: progress; opacity: .7; }
+  .err { margin: 14px 0 0; padding: 12px 14px; border-left: 5px solid var(--scam); background: var(--scam-wash); font-weight: 600; }
+
+  .working { margin: 20px 0 0; padding: 0; list-style: none; }
+  .working li { position: relative; padding: 6px 0 6px 34px; color: var(--muted); }
+  .working li::before {
+    content: ""; position: absolute; left: 4px; top: 13px; width: 16px; height: 16px;
+    border: 2px solid var(--rule); border-radius: 50%;
+  }
+  .working li.done { color: var(--ink); }
+  .working li.done::before { border-color: var(--stamp); background: var(--stamp); }
+  .working li.now { font-weight: 700; }
+  .working li.now::before { border-color: var(--stamp); background: transparent; animation: turn 1s linear infinite; border-right-color: transparent; }
+  @keyframes turn { to { transform: rotate(1turn); } }
+
+  /* ---------- Result ---------- */
+  .result { margin-top: 44px; scroll-margin-top: 16px; }
+  .slip {
+    position: relative; padding: 18px 20px 20px; background: var(--slip); border-radius: 4px;
+    box-shadow: 0 1px 0 var(--rule), 0 14px 30px -18px rgba(26, 42, 79, .45);
+  }
+  .stamp {
+    display: inline-block; max-width: 100%; margin: -40px 0 8px -4px; padding: 6px 16px 2px;
+    font-size: clamp(38px, 11vw, 54px); line-height: 1.05; font-weight: 800; font-variation-settings: "wdth" 75;
+    text-transform: uppercase; letter-spacing: .03em; overflow-wrap: anywhere;
+    color: var(--v); background: var(--slip);
+    border: 4px solid var(--v); border-radius: 8px; outline: 2px solid var(--v); outline-offset: 4px;
+    transform: rotate(-4deg); transform-origin: 30% 60%;
+    -webkit-mask-image: var(--grain); mask-image: var(--grain);
+    -webkit-mask-size: 140px; mask-size: 140px;
+    animation: press .32s cubic-bezier(.2, .9, .3, 1.3) .1s both;
+  }
+  @keyframes press {
+    from { opacity: 0; transform: rotate(-11deg) scale(1.9); }
+    to   { opacity: 1; transform: rotate(-4deg) scale(1); }
+  }
+  :root { --grain: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.9 1.8'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .result.scam { --v: var(--scam); --wash: var(--scam-wash); }
+  .result.suspicious { --v: var(--sus); --wash: var(--sus-wash); }
+  .result.likely_safe { --v: var(--safe); --wash: var(--safe-wash); }
+  .kind-of { margin: 6px 0 0; font-weight: 700; color: var(--v); font-size: 19px; }
+  .one { margin: 8px 0 0; font-size: 26px; line-height: 1.3; font-weight: 700; text-wrap: pretty; }
+  .why { margin: 10px 0 0; }
+  .listen { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--rule); }
+  .listen p { margin: 0; font-weight: 700; }
+
+  .part { margin-top: 36px; }
+  .part h2 { margin: 0 0 12px; font-size: 24px; line-height: 1.25; font-weight: 800; font-variation-settings: "wdth" 108; }
+  .flags { margin: 0; padding: 0; list-style: none; }
+  .flags li { margin: 0 0 18px; }
+  .flags q { display: block; quotes: "“" "”"; font-size: 20px; font-weight: 700; overflow-wrap: anywhere; }
+  .flags q span { background: linear-gradient(transparent 40%, var(--scam-mark) 40%, var(--scam-mark) 94%, transparent 94%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .steps { margin: 0; padding-left: 0; list-style: none; counter-reset: s; }
+  .steps li { position: relative; counter-increment: s; margin: 0 0 12px; padding-left: 46px; min-height: 34px; }
+  .steps li::before {
+    content: counter(s); position: absolute; left: 0; top: -1px; width: 34px; height: 34px;
+    display: grid; place-items: center; border-radius: 50%;
+    background: var(--ink); color: var(--paper); font-weight: 800; font-size: 17px;
+  }
+  .urgent { padding: 18px 20px; background: var(--scam-wash); border-left: 6px solid var(--scam); border-radius: 0 10px 10px 0; }
+  .urgent .steps li::before { background: var(--scam); color: var(--slip); }
+  .found { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .found li { padding: 4px 12px; border: 1px solid var(--rule); border-radius: 8px; background: var(--slip); font-size: 16px; overflow-wrap: anywhere; }
+  details { margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 16px; }
+  details summary { cursor: pointer; font-weight: 600; color: var(--ink); min-height: 32px; }
+  details ol { padding-left: 22px; }
+  details pre { margin: 10px 0 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; color: var(--ink); background: var(--slip); border-radius: 8px; }
+
+  /* ---------- Help band ---------- */
+  .help { margin-top: 56px; padding: 22px 20px; background: var(--slip); border-radius: 14px; border: 2px solid var(--rule); }
+  .help h2 { margin: 0; font-size: 22px; font-weight: 800; }
+  .help p { margin: 8px 0 0; }
+  .call {
+    display: inline-flex; align-items: baseline; gap: 12px; margin-top: 12px; padding: 8px 22px 6px;
+    font-size: 40px; font-weight: 800; font-variation-settings: "wdth" 90; line-height: 1.1;
+    color: var(--slip); background: var(--scam); border-radius: 12px; text-decoration: none;
+  }
+  .call small { font-size: 17px; font-weight: 600; font-variation-settings: "wdth" 100; }
+  .help a:not(.call) { color: var(--ink); font-weight: 600; text-underline-offset: 3px; }
+  footer { margin-top: 28px; font-size: 15px; color: var(--muted); }
+  footer p { margin: 6px 0 0; }
+
+  @media (min-width: 720px) {
+    main { padding-top: 36px; }
+    .lede { margin: 48px 0 40px; }
+    .slip { padding: 22px 28px 26px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before { animation: none !important; }
+  }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1>🛡️ Scam <span>Kavach</span></h1>
-    <p>Got a strange SMS, WhatsApp message or phone call? Check it here. We explain it in your language and read it aloud.<br>
-       <span lang="hi">कोई अजीब मैसेज या कॉल आया? यहाँ जाँचें, जवाब आपकी भाषा में, आवाज़ के साथ।</span></p>
+    <div class="mark">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 4 6.5v8.2C4 22 9.2 27.6 16 30c6.8-2.4 12-8 12-15.3V6.5Z" fill="currentColor"/><path d="m10.5 16 4 4 7-8" fill="none" stroke="var(--paper)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Scam Kavach
+    </div>
+    <div class="lede">
+      <h1>Is this message a scam?</h1>
+      <p>Show us the SMS, WhatsApp message or call. We'll tell you what it really is, in your language, out loud.</p>
+      <p lang="hi">कोई अजीब मैसेज या कॉल आया? यहाँ जाँचें, जवाब आपकी भाषा में, आवाज़ के साथ।</p>
+    </div>
   </header>
 
-  <section class="card">
-    <label class="field" for="lang">Explain in / किस भाषा में समझाएँ</label>
-    <select id="lang"></select>
+  <section aria-label="Check a message">
+    <fieldset class="step langs" id="langs">
+      <legend class="step-q">Explain it to me in</legend>
+    </fieldset>
 
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-pane="image">📷 Screenshot</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="text">✍️ Paste text</button>
-      <button class="tab" role="tab" aria-selected="false" data-pane="audio">🎙️ Call / voice note</button>
-    </div>
-
-    <div class="pane" id="pane-image">
-      <div class="drop" id="drop" tabindex="0">
-        <div id="drop-label">Tap to choose a screenshot or photo<br><small>or paste it (Ctrl+V) · PNG, JPG, PDF</small></div>
+    <div class="step">
+      <p class="step-q" id="kind-q">What did you get?</p>
+      <div class="kinds" role="tablist" aria-labelledby="kind-q">
+        <button class="kind" role="tab" type="button" aria-selected="true" aria-controls="pane-image" data-pane="image">
+          <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="2.5" width="18" height="29" rx="3"/><path d="M8 25h18M15 28.2h4"/><path d="m11 21 4.5-5 3 3 2-2 3.5 4"/><circle cx="20.5" cy="10" r="2"/></svg>
+          Screenshot
+        </button>
+        <button class="kind" role="tab" type="button" aria-selected="false" aria-controls="pane-text" data-pane="text">
+          <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M4 7a3 3 0 0 1 3-3h20a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H14l-7 6v-6a3 3 0 0 1-3-3Z"/><path d="M10 11h14M10 16.5h9"/></svg>
+          Message text
+        </button>
+        <button class="kind" role="tab" type="button" aria-selected="false" aria-controls="pane-audio" data-pane="audio">
+          <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M8.5 4.5h4l2.5 6.5-3.2 2.2a17 17 0 0 0 8 8l2.2-3.2 6.5 2.5v4a3 3 0 0 1-3 3C14.400 27.500 6.500 19.600 5.500 7.500a3 3 0 0 1 3-3Z"/><path d="M21 4.5a8.5 8.5 0 0 1 8.5 8.5M21 9.5a3.500 3.500 0 0 1 3.500 3.500"/></svg>
+          Call or voice note
+        </button>
       </div>
-      <input type="file" id="image" accept="image/*,application/pdf" hidden>
-    </div>
 
-    <div class="pane" id="pane-text" hidden>
-      <textarea id="text" maxlength="5000" placeholder="Paste the message here, in any language…&#10;मैसेज यहाँ पेस्ट करें…"></textarea>
-    </div>
-
-    <div class="pane" id="pane-audio" hidden>
-      <div class="row">
-        <button class="btn secondary" id="rec" type="button">🎙️ Record (max 30 s)</button>
-        <button class="btn secondary" id="pick-audio" type="button">📁 Upload recording</button>
-        <span id="rec-status" class="hint"></span>
+      <div class="panel" id="pane-image" role="tabpanel">
+        <button class="drop" id="drop" type="button">
+          <span id="drop-label"><strong>Choose a screenshot or photo</strong><small>PNG, JPG or PDF. On a computer you can also paste it here.</small></span>
+        </button>
+        <input type="file" id="image" accept="image/*,application/pdf" hidden>
       </div>
-      <input type="file" id="audio" accept="audio/*,.opus,.ogg,.m4a,.amr" hidden>
-      <audio id="audio-preview" controls hidden></audio>
-      <p class="hint">Use a short clip (under 30 seconds) of the caller or voice note. Any Indian language works.</p>
+
+      <div class="panel" id="pane-text" role="tabpanel" hidden>
+        <label class="sr" for="text">Message text</label>
+        <textarea id="text" maxlength="5000" placeholder="Paste the message here, in any language&#10;मैसेज यहाँ पेस्ट करें"></textarea>
+      </div>
+
+      <div class="panel" id="pane-audio" role="tabpanel" hidden>
+        <div class="rec-row">
+          <button class="btn-line" id="rec" type="button">Record the caller</button>
+          <button class="btn-line" id="pick-audio" type="button">Upload a recording</button>
+          <span id="rec-status" class="rec-status" aria-live="polite"></span>
+        </div>
+        <input type="file" id="audio" accept="audio/*,.opus,.ogg,.m4a,.amr" hidden>
+        <audio id="audio-preview" controls hidden></audio>
+        <p class="note">Keep it under 30 seconds. Any Indian language works, even mixed with English.</p>
+      </div>
     </div>
 
-    <button class="btn" id="go" type="button">Check this message</button>
-    <div id="error" class="err" hidden></div>
-    <ol id="progress" class="progress" hidden></ol>
+    <button class="go" id="go" type="button">Check this message</button>
+    <p id="error" class="err" role="alert" hidden></p>
+    <ol id="progress" class="working" aria-live="polite" hidden></ol>
   </section>
 
-  <section id="result" hidden></section>
+  <section id="result" class="result" tabindex="-1" hidden></section>
 
-  <section class="card help">
-    <h2>Already lost money?</h2>
-    Call <strong>1930</strong> (National Cyber Crime Helpline) immediately and report at <strong>cybercrime.gov.in</strong>.
-    Report fraud calls and SMS on <strong>sancharsaathi.gov.in</strong> (Chakshu).
+  <section class="help" aria-labelledby="help-h">
+    <h2 id="help-h">Already lost money?</h2>
+    <p>Call the National Cyber Crime Helpline straight away. The sooner you call, the more likely the money can be stopped.</p>
+    <a class="call" href="tel:1930">1930 <small>Call now</small></a>
+    <p>Then report it at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>.
+       Report fraud calls and SMS at <a href="https://sancharsaathi.gov.in" target="_blank" rel="noopener">sancharsaathi.gov.in</a> (Chakshu).</p>
   </section>
 
   <footer>
-    Built with Sarvam AI: Vision · Saaras · Sarvam-105B · Translate · Bulbul.<br>
-    We don't store your messages. AI can make mistakes. When in doubt, call your bank on the number printed on your card.
+    <p>We don't store your messages. AI can make mistakes. When in doubt, call your bank on the number printed on your card.</p>
+    <p>Built on Sarvam AI: Vision, Saaras, Sarvam-105B, Translate and Bulbul.</p>
   </footer>
 </main>
 
@@ -146,19 +306,21 @@ let pane = "image", imageFile = null, audioBlob = null, audioName = "recording.w
 const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
                 set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 
-// Languages
+// Languages, shown as chips in their own script
+const lang = () => document.querySelector('input[name="lang"]:checked')?.value || "hi-IN";
 fetch("/api/languages").then((r) => r.json()).then((langs) => {
-  const sel = $("#lang");
-  for (const [code, name] of Object.entries(langs)) sel.add(new Option(name, code));
-  sel.value = store.get("lang") || "hi-IN";
-  sel.onchange = () => store.set("lang", sel.value);
+  const saved = store.get("lang") || "hi-IN";
+  $("#langs").insertAdjacentHTML("beforeend", Object.entries(langs).map(([code, name]) =>
+    `<label class="lang"><input type="radio" name="lang" value="${esc(code)}"${code === saved ? " checked" : ""}><span lang="${esc(code === "od-IN" ? "or" : code.slice(0, 2))}">${esc(name)}</span></label>`).join(""));
+  if (!document.querySelector('input[name="lang"]:checked')) document.querySelector('input[name="lang"]')?.click();
+  $("#langs").onchange = () => store.set("lang", lang());
 });
 
 // Tabs
-document.querySelectorAll(".tab").forEach((t) => t.onclick = () => {
+document.querySelectorAll(".kind").forEach((t) => t.onclick = () => {
   pane = t.dataset.pane;
-  document.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === t));
-  document.querySelectorAll(".pane").forEach((p) => p.hidden = p.id !== "pane-" + pane);
+  document.querySelectorAll(".kind").forEach((x) => x.setAttribute("aria-selected", x === t));
+  document.querySelectorAll(".panel").forEach((p) => p.hidden = p.id !== "pane-" + pane);
 });
 
 // Image: pick, drop, paste
@@ -167,16 +329,15 @@ function setImage(file) {
   imageFile = file;
   const drop = $("#drop");
   drop.classList.add("has");
-  const name = esc(file.name || "pasted image");
+  const name = esc(file.name || "Pasted image");
   if (file.type.startsWith("image/")) {
     const url = URL.createObjectURL(file);
-    $("#drop-label").innerHTML = `<img src="${url}" alt="Selected screenshot">${name} · tap to change`;
+    $("#drop-label").innerHTML = `<img src="${url}" alt="The screenshot you chose"><strong>${name}</strong><small>Tap to choose a different one</small>`;
   } else {
-    $("#drop-label").innerHTML = `📄 ${name} · tap to change`;
+    $("#drop-label").innerHTML = `<strong>${name}</strong><small>Tap to choose a different one</small>`;
   }
 }
 $("#drop").onclick = () => $("#image").click();
-$("#drop").onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") $("#image").click(); };
 $("#image").onchange = (e) => setImage(e.target.files[0]);
 $("#drop").ondragover = (e) => e.preventDefault();
 $("#drop").ondrop = (e) => { e.preventDefault(); setImage(e.dataTransfer.files[0]); };
@@ -206,38 +367,41 @@ $("#rec").onclick = async () => {
       clearInterval(recTimer);
       const type = recorder.mimeType || "audio/webm";
       setAudio(new Blob(chunks, { type }), "recording." + (type.includes("mp4") ? "mp4" : type.includes("ogg") ? "ogg" : "webm"));
-      recorder = null; $("#rec").textContent = "🎙️ Record again";
+      recorder = null; $("#rec").textContent = "Record again"; $("#rec").classList.remove("recording");
     };
     recorder.start();
     let s = 0;
-    $("#rec").textContent = "⏹ Stop";
-    $("#rec-status").innerHTML = `<span class="rec-dot"></span> 0 s`;
-    recTimer = setInterval(() => { s++; $("#rec-status").innerHTML = `<span class="rec-dot"></span> ${s} s`; if (s >= 30) recorder?.stop(); }, 1000);
-  } catch { showError("Microphone not available. Upload a recording instead."); }
+    $("#rec").textContent = "Stop recording"; $("#rec").classList.add("recording");
+    $("#rec-status").innerHTML = `<span class="rec-dot"></span>0 s of 30`;
+    recTimer = setInterval(() => { s++; $("#rec-status").innerHTML = `<span class="rec-dot"></span>${s} s of 30`; if (s >= 30) recorder?.stop(); }, 1000);
+  } catch { showError("The microphone isn't available. Upload a recording instead."); }
 };
 
 function showError(msg) { const e = $("#error"); e.textContent = msg; e.hidden = !msg; }
 
 // Progress (approximate stages while the server works)
-const STAGES = { image: ["Reading screenshot with Sarvam Vision"], audio: ["Transcribing with Saaras"], text: [] };
+const STAGES = { image: ["Reading your screenshot"], audio: ["Listening to the recording"], text: [] };
 function startProgress() {
-  const list = [...STAGES[pane], "Identifying the language", "Checking for scam patterns with Sarvam-105B", "Translating with Sarvam Translate", "Preparing voice with Bulbul"];
+  const list = [...STAGES[pane], "Finding which language it's in", "Checking it against known scams", "Writing the answer in your language", "Recording the spoken answer"];
   const ol = $("#progress"); ol.hidden = false;
   ol.innerHTML = list.map((s) => `<li>${esc(s)}</li>`).join("");
-  let i = 0; const items = ol.querySelectorAll("li");
-  items[0].classList.add("done");
-  return setInterval(() => { if (i < items.length - 1) items[++i].classList.add("done"); }, 2500);
+  const items = ol.querySelectorAll("li");
+  let i = 0; items[0].classList.add("now");
+  return setInterval(() => {
+    if (i >= items.length - 1) return;
+    items[i].classList.replace("now", "done"); items[++i].classList.add("now");
+  }, 2500);
 }
 
 $("#go").onclick = async () => {
   showError("");
   const fd = new FormData();
-  fd.append("language", $("#lang").value || "hi-IN");
-  if (pane === "image") { if (!imageFile) return showError("Choose or paste a screenshot first."); fd.append("image", imageFile, imageFile.name || "screenshot.png"); }
+  fd.append("language", lang());
+  if (pane === "image") { if (!imageFile) return showError("Choose a screenshot first, or paste one."); fd.append("image", imageFile, imageFile.name || "screenshot.png"); }
   if (pane === "audio") { if (!audioBlob) return showError("Record or upload a clip first."); fd.append("audio", audioBlob, audioName); }
   if (pane === "text") { const t = $("#text").value.trim(); if (!t) return showError("Paste the message first."); fd.append("text", t); }
 
-  const btn = $("#go"); btn.disabled = true; btn.textContent = "Checking…";
+  const btn = $("#go"); btn.disabled = true; btn.textContent = "Checking, this takes about 15 seconds";
   $("#result").hidden = true;
   const timer = startProgress();
   try {
@@ -250,29 +414,38 @@ $("#go").onclick = async () => {
 };
 
 function render(d) {
-  const h = d.headings, L = d.local, icon = { scam: "⛔", suspicious: "⚠️", likely_safe: "✅" }[d.verdict];
-  const list = (items) => items.map((x) => `<li>${esc(x)}</li>`).join("");
+  const h = d.headings, L = d.local, risky = d.verdict !== "likely_safe";
+  const tl = esc(d.target_language === "od-IN" ? "or" : (d.target_language || "").slice(0, 2));
+  const steps = (items) => `<ol class="steps">${items.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>`;
   const ind = d.indicators || {};
-  const chips = [...(ind.links || []), ...(ind.apk_files || []), ...(ind.phone_numbers || []), ...(ind.upi_ids || [])];
-  $("#result").innerHTML = `
-    <div class="verdict ${d.verdict}">
-      <div class="tag">${icon} ${esc(h[d.verdict])}</div>
-      ${L.scam_type && d.verdict !== "likely_safe" ? `<div class="type">${esc(L.scam_type)}</div>` : ""}
-      <div class="one">${esc(L.one_line)}</div>
-      <div>${esc(L.explanation)}</div>
-      <audio controls autoplay src="data:audio/mpeg;base64,${d.audio_mp3_b64}"></audio>
+  const found = [...(ind.links || []), ...(ind.apk_files || []), ...(ind.phone_numbers || []), ...(ind.upi_ids || [])];
+  const el = $("#result");
+  el.className = "result " + d.verdict;
+  el.innerHTML = `
+    <div lang="${tl}">
+      <article class="slip">
+        <h2 class="stamp">${esc(h[d.verdict])}</h2>
+        ${L.scam_type && risky ? `<p class="kind-of">${esc(L.scam_type)}</p>` : ""}
+        <p class="one">${esc(L.one_line)}</p>
+        <p class="why">${esc(L.explanation)}</p>
+        <div class="listen">
+          <p>${esc(h.listen)}</p>
+          <audio controls autoplay src="data:audio/mpeg;base64,${d.audio_mp3_b64}"></audio>
+        </div>
+      </article>
+      ${L.red_flags.length ? `<div class="part"><h2>${esc(h.red_flags)}</h2><ul class="flags">${L.red_flags.map((f) =>
+        `<li>${f.quote ? `<q lang=""><span>${esc(f.quote)}</span></q>` : ""}${esc(f.why)}</li>`).join("")}</ul></div>` : ""}
+      <div class="part"><h2>${esc(h.do_now)}</h2>${steps(L.do_now)}</div>
+      ${risky && L.if_already_clicked.length ? `<div class="part urgent"><h2>${esc(h.if_already_clicked)}</h2>${steps(L.if_already_clicked)}</div>` : ""}
     </div>
-    ${L.red_flags.length ? `<div class="card"><h2>🚩 ${esc(h.red_flags)}</h2>${L.red_flags.map((f) =>
-      `<div class="flag">${f.quote ? `<blockquote>“${esc(f.quote)}”</blockquote>` : ""}${esc(f.why)}</div>`).join("")}</div>` : ""}
-    <div class="card"><h2>👉 ${esc(h.do_now)}</h2><ol>${list(L.do_now)}</ol></div>
-    ${d.verdict !== "likely_safe" && L.if_already_clicked.length ? `<div class="card"><h2>🆘 ${esc(h.if_already_clicked)}</h2><ol>${list(L.if_already_clicked)}</ol></div>` : ""}
-    ${chips.length ? `<div class="card"><h2>🔗 Links, numbers & apps found</h2><div class="chips">${chips.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div></div>` : ""}
-    <div class="card"><details><summary>How Sarvam AI processed this</summary>
-      <ol>${list(d.steps)}</ol>
-      <p class="hint">Message language: ${esc(d.source_language)} · Confidence: ${esc(d.confidence)}%</p>
-      <pre>${esc(d.message)}</pre></details></div>`;
-  $("#result").hidden = false;
-  $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+    ${found.length ? `<div class="part"><h2>Links, numbers and apps in this message</h2><ul class="found">${found.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>` : ""}
+    <details><summary>How Sarvam AI checked this</summary>
+      <ol>${d.steps.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
+      <p>Message language: ${esc(d.source_language)}. Confidence: ${esc(d.confidence)}%.</p>
+      <pre>${esc(d.message)}</pre></details>`;
+  el.hidden = false;
+  el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  el.focus({ preventScroll: true });
 }
 </script>
 </body>
