@@ -1,1 +1,1 @@
-from app.main import app  # Vercel entrypoint
+from app.main import app  # noqa: F401  Vercel entrypoint

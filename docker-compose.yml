@@ -5,4 +5,9 @@ services:
     restart: unless-stopped
     env_file: .env            # SARVAM_API_KEY=..., optional RATE_LIMIT_PER_HOUR=20
     ports:
-      - "127.0.0.1:8010:8000" # only reachable locally; Cloudflare Tunnel publishes it
+      - "127.0.0.1:8010:8000" # local/dev testing only; production is Vercel
+    volumes:
+      - ./app:/srv/app:ro     # serve the working tree, no rebuild needed for code changes
+    environment:
+      WATCHFILES_FORCE_POLLING: "true"  # file events don't cross Windows bind mounts
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
