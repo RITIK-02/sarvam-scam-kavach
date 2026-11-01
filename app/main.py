@@ -13,7 +13,7 @@ log = logging.getLogger("kavach")
 logging.basicConfig(level=logging.INFO)
 
 STATIC = Path(__file__).parent / "static"
-MAX_UPLOAD = 8 * 1024 * 1024
+MAX_UPLOAD = 4 * 1024 * 1024  # Vercel request body limit is 4.5 MB
 RATE_LIMIT = int(os.environ.get("RATE_LIMIT_PER_HOUR", "20"))  # checks per IP per hour
 _hits: dict[str, deque] = defaultdict(deque)
 
@@ -22,7 +22,8 @@ app = FastAPI(title="Scam Kavach", docs_url=None, redoc_url=None)
 
 def _client_ip(request: Request) -> str:
     # Behind Cloudflare Tunnel the real visitor IP arrives in CF-Connecting-IP.
-    return request.headers.get("cf-connecting-ip") or (request.client.host if request.client else "unknown")
+    fwd = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    return request.headers.get("cf-connecting-ip") or fwd or (request.client.host if request.client else "unknown")
 
 
 def _rate_limit(ip: str) -> None:
@@ -60,7 +61,7 @@ def check(request: Request, language: str = Form("hi-IN"), text: str = Form(""),
             return None
         data = upload.file.read(MAX_UPLOAD + 1)
         if len(data) > MAX_UPLOAD:
-            raise HTTPException(413, "File is too large (max 8 MB).")
+            raise HTTPException(413, "File is too large (max 4 MB).")
         return (data, upload.filename) if data else None
 
     img, aud = read(image), read(audio)

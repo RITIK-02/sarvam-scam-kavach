@@ -1,0 +1,5 @@
+.env
+Data/
+tests/
+*.csv
+INSTRUCTIONS.md
