@@ -1,0 +1,8 @@
+services:
+  scam-kavach:
+    build: .
+    container_name: scam-kavach
+    restart: unless-stopped
+    env_file: .env            # SARVAM_API_KEY=..., optional RATE_LIMIT_PER_HOUR=20
+    ports:
+      - "127.0.0.1:8010:8000" # only reachable locally; Cloudflare Tunnel publishes it

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scam Kavach</title>
+<meta name="description" content="Got a suspicious SMS, WhatsApp message or call? Scam Kavach checks it and explains it in your language, out loud.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;800&family=Noto+Sans+Tamil:wght@400;600&family=Noto+Sans+Bengali:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&family=Noto+Sans+Kannada:wght@400;600&family=Noto+Sans+Malayalam:wght@400;600&family=Noto+Sans+Gujarati:wght@400;600&family=Noto+Sans+Gurmukhi:wght@400;600&family=Noto+Sans+Oriya:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f2; --surface: #ffffff; --ink: #1d1b18; --muted: #6b655c; --line: #e6dfd3;
+    --brand: #b4461b; --brand-ink: #ffffff;
+    --scam: #b42318; --scam-bg: #fdecea; --sus: #a15c07; --sus-bg: #fff4e0; --safe: #1f7a4d; --safe-bg: #e7f6ee;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 8px 24px rgba(0,0,0,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161412; --surface: #211e1b; --ink: #f2ede6; --muted: #a8a096; --line: #36312b;
+      --brand: #ee7a45; --brand-ink: #1a0d06;
+      --scam: #ff8a7a; --scam-bg: #3a1714; --sus: #f5b551; --sus-bg: #352512; --safe: #6fd3a0; --safe-bg: #12301f;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Tamil", "Noto Sans Bengali", "Noto Sans Telugu",
+      "Noto Sans Kannada", "Noto Sans Malayalam", "Noto Sans Gujarati", "Noto Sans Gurmukhi", "Noto Sans Oriya", system-ui, sans-serif;
+    font-size: 17px; line-height: 1.55;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 64px; }
+  header h1 { font-size: 30px; margin: 0; letter-spacing: -.02em; }
+  header h1 span { color: var(--brand); }
+  header p { margin: 6px 0 0; color: var(--muted); }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin-top: 18px; box-shadow: var(--shadow); }
+  label.field { display: block; font-weight: 600; margin-bottom: 6px; }
+  select, textarea { width: 100%; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  textarea { min-height: 140px; resize: vertical; }
+  .tabs { display: flex; gap: 6px; margin: 16px 0 12px; flex-wrap: wrap; }
+  .tab { flex: 1 1 0; min-width: 120px; font: inherit; font-weight: 600; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .pane[hidden] { display: none; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px; text-align: center; color: var(--muted); cursor: pointer; }
+  .drop.has { border-style: solid; border-color: var(--brand); color: var(--ink); }
+  .drop img { max-width: 100%; max-height: 260px; border-radius: 8px; display: block; margin: 0 auto 8px; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 12px; padding: 14px 18px; cursor: pointer; background: var(--brand); color: var(--brand-ink); }
+  .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 600; padding: 10px 14px; }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  #go { width: 100%; margin-top: 16px; font-size: 19px; }
+  .hint { font-size: 14px; color: var(--muted); margin-top: 8px; }
+  .err { color: var(--scam); font-weight: 600; margin-top: 12px; }
+  .progress { margin-top: 14px; font-size: 15px; color: var(--muted); }
+  .progress li.done { color: var(--ink); }
+  .verdict { border-radius: 16px; padding: 18px; margin-top: 18px; border: 2px solid; }
+  .verdict.scam { background: var(--scam-bg); border-color: var(--scam); }
+  .verdict.suspicious { background: var(--sus-bg); border-color: var(--sus); }
+  .verdict.likely_safe { background: var(--safe-bg); border-color: var(--safe); }
+  .verdict .tag { font-size: 26px; font-weight: 800; }
+  .verdict.scam .tag { color: var(--scam); } .verdict.suspicious .tag { color: var(--sus); } .verdict.likely_safe .tag { color: var(--safe); }
+  .verdict .type { font-weight: 600; color: var(--muted); }
+  .verdict .one { font-size: 20px; font-weight: 600; margin: 10px 0 6px; }
+  audio { width: 100%; margin-top: 10px; }
+  h2 { font-size: 18px; margin: 0 0 10px; }
+  ol, ul { margin: 0; padding-left: 22px; }
+  li { margin: 6px 0; }
+  blockquote { margin: 0 0 4px; padding: 6px 10px; border-left: 4px solid var(--scam); background: var(--bg); border-radius: 0 8px 8px 0; font-weight: 600; overflow-wrap: anywhere; }
+  .flag { margin-bottom: 12px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font-size: 14px; padding: 4px 10px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); overflow-wrap: anywhere; }
+  details summary { cursor: pointer; font-weight: 600; }
+  details pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: inherit; font-size: 15px; background: var(--bg); padding: 10px; border-radius: 8px; }
+  .help { font-size: 15px; }
+  .help strong { color: var(--brand); }
+  footer { margin-top: 28px; font-size: 13px; color: var(--muted); text-align: center; }
+  .rec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--scam); display: inline-block; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: .2; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>🛡️ Scam <span>Kavach</span></h1>
+    <p>Got a strange SMS, WhatsApp message or phone call? Check it here. We explain it in your language and read it aloud.<br>
+       <span lang="hi">कोई अजीब मैसेज या कॉल आया? यहाँ जाँचें, जवाब आपकी भाषा में, आवाज़ के साथ।</span></p>
+  </header>
+
+  <section class="card">
+    <label class="field" for="lang">Explain in / किस भाषा में समझाएँ</label>
+    <select id="lang"></select>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-pane="image">📷 Screenshot</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="text">✍️ Paste text</button>
+      <button class="tab" role="tab" aria-selected="false" data-pane="audio">🎙️ Call / voice note</button>
+    </div>
+
+    <div class="pane" id="pane-image">
+      <div class="drop" id="drop" tabindex="0">
+        <div id="drop-label">Tap to choose a screenshot or photo<br><small>or paste it (Ctrl+V) · PNG, JPG, PDF</small></div>
+      </div>
+      <input type="file" id="image" accept="image/*,application/pdf" hidden>
+    </div>
+
+    <div class="pane" id="pane-text" hidden>
+      <textarea id="text" maxlength="5000" placeholder="Paste the message here, in any language…&#10;मैसेज यहाँ पेस्ट करें…"></textarea>
+    </div>
+
+    <div class="pane" id="pane-audio" hidden>
+      <div class="row">
+        <button class="btn secondary" id="rec" type="button">🎙️ Record (max 30 s)</button>
+        <button class="btn secondary" id="pick-audio" type="button">📁 Upload recording</button>
+        <span id="rec-status" class="hint"></span>
+      </div>
+      <input type="file" id="audio" accept="audio/*,.opus,.ogg,.m4a,.amr" hidden>
+      <audio id="audio-preview" controls hidden></audio>
+      <p class="hint">Use a short clip (under 30 seconds) of the caller or voice note. Any Indian language works.</p>
+    </div>
+
+    <button class="btn" id="go" type="button">Check this message</button>
+    <div id="error" class="err" hidden></div>
+    <ol id="progress" class="progress" hidden></ol>
+  </section>
+
+  <section id="result" hidden></section>
+
+  <section class="card help">
+    <h2>Already lost money?</h2>
+    Call <strong>1930</strong> (National Cyber Crime Helpline) immediately and report at <strong>cybercrime.gov.in</strong>.
+    Report fraud calls and SMS on <strong>sancharsaathi.gov.in</strong> (Chakshu).
+  </section>
+
+  <footer>
+    Built with Sarvam AI: Vision · Saaras · Sarvam-105B · Translate · Bulbul.<br>
+    We don't store your messages. AI can make mistakes. When in doubt, call your bank on the number printed on your card.
+  </footer>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let pane = "image", imageFile = null, audioBlob = null, audioName = "recording.webm";
+
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+
+// Languages
+fetch("/api/languages").then((r) => r.json()).then((langs) => {
+  const sel = $("#lang");
+  for (const [code, name] of Object.entries(langs)) sel.add(new Option(name, code));
+  sel.value = store.get("lang") || "hi-IN";
+  sel.onchange = () => store.set("lang", sel.value);
+});
+
+// Tabs
+document.querySelectorAll(".tab").forEach((t) => t.onclick = () => {
+  pane = t.dataset.pane;
+  document.querySelectorAll(".tab").forEach((x) => x.setAttribute("aria-selected", x === t));
+  document.querySelectorAll(".pane").forEach((p) => p.hidden = p.id !== "pane-" + pane);
+});
+
+// Image: pick, drop, paste
+function setImage(file) {
+  if (!file) return;
+  imageFile = file;
+  const drop = $("#drop");
+  drop.classList.add("has");
+  const name = esc(file.name || "pasted image");
+  if (file.type.startsWith("image/")) {
+    const url = URL.createObjectURL(file);
+    $("#drop-label").innerHTML = `<img src="${url}" alt="Selected screenshot">${name} · tap to change`;
+  } else {
+    $("#drop-label").innerHTML = `📄 ${name} · tap to change`;
+  }
+}
+$("#drop").onclick = () => $("#image").click();
+$("#drop").onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") $("#image").click(); };
+$("#image").onchange = (e) => setImage(e.target.files[0]);
+$("#drop").ondragover = (e) => e.preventDefault();
+$("#drop").ondrop = (e) => { e.preventDefault(); setImage(e.dataTransfer.files[0]); };
+document.addEventListener("paste", (e) => {
+  const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith("image/"));
+  if (item) { setImage(item.getAsFile()); document.querySelector('[data-pane="image"]').click(); }
+});
+
+// Audio: upload or record
+function setAudio(blob, name) {
+  audioBlob = blob; audioName = name;
+  const p = $("#audio-preview"); p.src = URL.createObjectURL(blob); p.hidden = false;
+  $("#rec-status").textContent = name;
+}
+$("#pick-audio").onclick = () => $("#audio").click();
+$("#audio").onchange = (e) => { const f = e.target.files[0]; if (f) setAudio(f, f.name); };
+let recorder = null, recTimer = null;
+$("#rec").onclick = async () => {
+  if (recorder) { recorder.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const chunks = [];
+    recorder = new MediaRecorder(stream);
+    recorder.ondataavailable = (e) => chunks.push(e.data);
+    recorder.onstop = () => {
+      stream.getTracks().forEach((t) => t.stop());
+      clearInterval(recTimer);
+      const type = recorder.mimeType || "audio/webm";
+      setAudio(new Blob(chunks, { type }), "recording." + (type.includes("mp4") ? "mp4" : type.includes("ogg") ? "ogg" : "webm"));
+      recorder = null; $("#rec").textContent = "🎙️ Record again";
+    };
+    recorder.start();
+    let s = 0;
+    $("#rec").textContent = "⏹ Stop";
+    $("#rec-status").innerHTML = `<span class="rec-dot"></span> 0 s`;
+    recTimer = setInterval(() => { s++; $("#rec-status").innerHTML = `<span class="rec-dot"></span> ${s} s`; if (s >= 30) recorder?.stop(); }, 1000);
+  } catch { showError("Microphone not available. Upload a recording instead."); }
+};
+
+function showError(msg) { const e = $("#error"); e.textContent = msg; e.hidden = !msg; }
+
+// Progress (approximate stages while the server works)
+const STAGES = { image: ["Reading screenshot with Sarvam Vision"], audio: ["Transcribing with Saaras"], text: [] };
+function startProgress() {
+  const list = [...STAGES[pane], "Identifying the language", "Checking for scam patterns with Sarvam-105B", "Translating with Sarvam Translate", "Preparing voice with Bulbul"];
+  const ol = $("#progress"); ol.hidden = false;
+  ol.innerHTML = list.map((s) => `<li>${esc(s)}</li>`).join("");
+  let i = 0; const items = ol.querySelectorAll("li");
+  items[0].classList.add("done");
+  return setInterval(() => { if (i < items.length - 1) items[++i].classList.add("done"); }, 2500);
+}
+
+$("#go").onclick = async () => {
+  showError("");
+  const fd = new FormData();
+  fd.append("language", $("#lang").value || "hi-IN");
+  if (pane === "image") { if (!imageFile) return showError("Choose or paste a screenshot first."); fd.append("image", imageFile, imageFile.name || "screenshot.png"); }
+  if (pane === "audio") { if (!audioBlob) return showError("Record or upload a clip first."); fd.append("audio", audioBlob, audioName); }
+  if (pane === "text") { const t = $("#text").value.trim(); if (!t) return showError("Paste the message first."); fd.append("text", t); }
+
+  const btn = $("#go"); btn.disabled = true; btn.textContent = "Checking…";
+  $("#result").hidden = true;
+  const timer = startProgress();
+  try {
+    const res = await fetch("/api/check", { method: "POST", body: fd });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.detail || "Something went wrong. Please try again.");
+    render(data);
+  } catch (e) { showError(e.message); }
+  finally { clearInterval(timer); $("#progress").hidden = true; btn.disabled = false; btn.textContent = "Check this message"; }
+};
+
+function render(d) {
+  const h = d.headings, L = d.local, icon = { scam: "⛔", suspicious: "⚠️", likely_safe: "✅" }[d.verdict];
+  const list = (items) => items.map((x) => `<li>${esc(x)}</li>`).join("");
+  const ind = d.indicators || {};
+  const chips = [...(ind.links || []), ...(ind.apk_files || []), ...(ind.phone_numbers || []), ...(ind.upi_ids || [])];
+  $("#result").innerHTML = `
+    <div class="verdict ${d.verdict}">
+      <div class="tag">${icon} ${esc(h[d.verdict])}</div>
+      ${L.scam_type && d.verdict !== "likely_safe" ? `<div class="type">${esc(L.scam_type)}</div>` : ""}
+      <div class="one">${esc(L.one_line)}</div>
+      <div>${esc(L.explanation)}</div>
+      <audio controls autoplay src="data:audio/mpeg;base64,${d.audio_mp3_b64}"></audio>
+    </div>
+    ${L.red_flags.length ? `<div class="card"><h2>🚩 ${esc(h.red_flags)}</h2>${L.red_flags.map((f) =>
+      `<div class="flag">${f.quote ? `<blockquote>“${esc(f.quote)}”</blockquote>` : ""}${esc(f.why)}</div>`).join("")}</div>` : ""}
+    <div class="card"><h2>👉 ${esc(h.do_now)}</h2><ol>${list(L.do_now)}</ol></div>
+    ${d.verdict !== "likely_safe" && L.if_already_clicked.length ? `<div class="card"><h2>🆘 ${esc(h.if_already_clicked)}</h2><ol>${list(L.if_already_clicked)}</ol></div>` : ""}
+    ${chips.length ? `<div class="card"><h2>🔗 Links, numbers & apps found</h2><div class="chips">${chips.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div></div>` : ""}
+    <div class="card"><details><summary>How Sarvam AI processed this</summary>
+      <ol>${list(d.steps)}</ol>
+      <p class="hint">Message language: ${esc(d.source_language)} · Confidence: ${esc(d.confidence)}%</p>
+      <pre>${esc(d.message)}</pre></details></div>`;
+  $("#result").hidden = false;
+  $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+</script>
+</body>
+</html>
