@@ -17,7 +17,7 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt pytest httpx ruff==0.17.3
       - run: ruff check app index.py tests/test_smoke.py
-      - run: pytest tests/test_smoke.py -q
+      - run: pytest -q
 
   docker:
     runs-on: ubuntu-latest
